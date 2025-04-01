@@ -93,41 +93,9 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr &input)
 { // input--msg消息
 
   PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
-  
-  // PointCloud<pcl::PointXYZ>::Ptr elevatedCloud(new pcl::PointCloud<pcl::PointXYZ>());
-  // PointCloud<pcl::PointXYZ>::Ptr groundCloud(new pcl::PointCloud<pcl::PointXYZ>());
 
-  // Convert from ros msg to PCL::PointCloud data type 转化数据类型msg→pointcloud data
   fromROSMsg(*input, *cloud); // /opt/ros/melodic/include/pcl_conversions/pcl_conversions.h
-  //start processing pcl::pointcloud
 
-  // 滤除一定高度以上的点
-  // pcl::PointCloud<pcl::PointXYZ>::Ptr z_filter_cloud(new pcl::PointCloud<pcl::PointXYZ>());
-  // pcl::PassThrough<pcl::PointXYZ> pass;             //设置滤波器对象
-  // pass.setInputCloud(cloud);                        //设置输入点云cloud（由input转化而来）
-  // pass.setFilterFieldName("z");                     //设置过滤时所需要点云类型的z字段
-  // pass.setFilterLimits(filter_z_min, filter_z_max); //设置在过滤字段上的范围（-3.0~1.0）
-  // //pass.setFilterLimitsNegative (true);     //设置保留范围内的还是过滤掉范围内的
-  // pass.filter(*z_filter_cloud); //执行滤波，保存过滤结果在cloud_filtered
-
-  // filter_mid_area(z_filter_cloud); //  ConditionalRemoval滤波 条件限定下的滤波器（x，y轴上的滤波）
-
-  // sensor_msgs::PointCloud2 ros_cloud;
-  // pcl::toROSMsg(*z_filter_cloud, ros_cloud); // 再转回ros数据格式
-  // ros_cloud.header = input->header;
-  // auxpoint_pub.publish(ros_cloud); //  发布者  ros_cloud--msg消息
-
-  // //地面去除，分出地面点和非地面点
-  // groundRemove(z_filter_cloud, elevatedCloud, groundCloud); // src/groundremove/ground_removal.cpp
-
-  // // Convert from PCL::PointCloud to ROS data type
-
-  // elevatedCloud->header.frame_id = cloud->header.frame_id; // 高点
-  // groundCloud->header.frame_id = cloud->header.frame_id;   // 地面点
-  // sensor_msgs::PointCloud2 output;
-  // sensor_msgs::PointCloud2 output2;
-  // toROSMsg(*groundCloud, output);    // 地面点
-  // toROSMsg(*elevatedCloud, output2); // 高点
 
   // 直接发布原始点云
   sensor_msgs::PointCloud2 raw_output;
