@@ -19,8 +19,7 @@ float picScale = 900.0f/roiM;   // ???
 // int ramPoints = 80;
 int ramPoints = 10;
 int lSlopeDist = 1;
-////////////////////////int lSlopeDist = 3.0;
-////////////////////////int lnumPoints = 300;
+
 int lnumPoints = 5;
 
 //////////////////////////////float sensorHeight = 1.73;

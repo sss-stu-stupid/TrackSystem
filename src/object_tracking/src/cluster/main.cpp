@@ -59,8 +59,8 @@ ros::Publisher box_pub;
 // 回调函数
 void  cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input){  // f非地面数据
 
+  // 1. 点云数据预处理
   PointCloud<pcl::PointXYZ>::Ptr raw_cloud (new pcl::PointCloud<pcl::PointXYZ> ());
-
   fromROSMsg (*input, *raw_cloud);
 
   int numCluster = 0; // global variable  聚类ID数量？
@@ -80,19 +80,16 @@ void  cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input){  // f非地面�
   //   ROS_INFO_STREAM("Cartesian Grid Dimensions: " << numGrid << "x" << numGrid);
   // }
 
+  // 2. 聚类处理
   componentClustering(raw_cloud, cartesianData, numCluster);  // Source: /src/cluster/component_clustering.cpp
   cout << "初始聚类ID数量numCluster is "<<numCluster<<endl; // 聚类的数量
-  // cout << "cartesianData is "<< cartesianData[1][2] <<endl; //二维网格？  报错
-  // for visualization
+
   PointCloud<pcl::PointXYZ>::Ptr clusteredCloud (new pcl::PointCloud<pcl::PointXYZ>);
-//  PointCloud<pcl::PointXYZRGB>::Ptr clusteredCloud (new pcl::PointCloud<pcl::PointXYZRGB>);
   
   makeClusteredCloud(raw_cloud, cartesianData, clusteredCloud);  // 聚类      Source: /src/cluster/component_clustering.cpp
 
   // Convert from PCL::PointCloud to ROS data type
   clusteredCloud->header.frame_id = raw_cloud->header.frame_id; // add "velo_link"
-  // sensor_msgs::PointCloud2 output;
-  // toROSMsg(*clusteredCloud, output);  // 转为Msg
 
   static int count = 0;
   static nav_msgs::OccupancyGrid og;   // 
@@ -104,50 +101,18 @@ void  cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input){  // f非地面�
   // create cost map with pointcloud    costmap代码地图 简单来说就是为了在这张地图上进行各种加工，方便我们后面进行路径规划而存在的。
   std::vector<int> cost_map = createCostMap(*raw_cloud); //  Source: /src/cluster/component_clustering.cpp
 
-  /*
-  bool filter = false;
-  if (filter)
-    cost_map = filterCostMap(cost_map);
-  */
 
   og.data.insert(og.data.end(), cost_map.begin(), cost_map.end());
   g_costmap_pub.publish(og);  // 发布者
   og.data.clear();
   count++;
-
-  // object_tracking::ObstacleList clu_obs;     // Obstacle  障碍物
-  // setObsMsg(raw_cloud, cartesianData, clu_obs);
-  // obs_pub.publish(clu_obs);   // 发布者
-  // pub.publish(output);  // 发布者
   
   counta ++;
   cout << "cluster Frame: "<<counta << "----------------------------------------"<< endl;   // 帧数
 
   visualization_msgs::MarkerArray ma;  //实体框
 
-  // debug 检查变量
-  // int valid_clusters = 0;
-  // for (int i = 0; i < numGrid; i++) {
-  //     for (int j = 0; j < numGrid; j++) {
-  //         if (cartesianData[i][j] > 0) {
-  //             valid_clusters++;
-  //         }
-  //     }
-  // }
-  // cout << "有效聚类点数量: " << valid_clusters << endl;
-
-  // float x_min = std::numeric_limits<float>::max();
-  // float x_max = -std::numeric_limits<float>::max();
-  // float y_min = std::numeric_limits<float>::max();
-  // float y_max = -std::numeric_limits<float>::max();
-  // for (const auto& pt : raw_cloud->points) {
-  //     x_min = std::min(x_min, pt.x);
-  //     x_max = std::max(x_max, pt.x);
-  //     y_min = std::min(y_min, pt.y);
-  //     y_max = std::max(y_max, pt.y);
-  // }
-  // cout << "点云范围: x[" << x_min << ", " << x_max << "], y[" << y_min << ", " << y_max << "]" << endl;
-
+  // 3. 边界框拟合
   vector<PointCloud<PointXYZ>> bBoxes = boxFitting(raw_cloud, cartesianData, numCluster,ma);  // bBoxes---- 实体边界框集合 多少个边界框  初始聚类ID数量numCluster
 
   object_tracking::trackbox boxArray; // boxArray--候选框8个坐标数组 的 数组  msg格式：object_tracking/msg/trackbox.msg
@@ -196,6 +161,7 @@ void  cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input){  // f非地面�
   // cout << "boxArray is " << boxArray<< endl;  // bBoxes
   cout << "size of bBoxes is " << bBoxes.size() << endl;  //bBoxes边界框的数量 size of bBoxes is 2
   cout << "size of marker is " << ma.markers.size() << endl; // marker数量 size of marker is 2
+  
   marker_array_pub_.publish(ma);   // 发布者
 
 
