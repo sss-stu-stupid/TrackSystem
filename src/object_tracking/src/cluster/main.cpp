@@ -167,6 +167,74 @@ void  cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input){  // f非地面�
 
 //*********************************************bBoxes visualization***************************************
 
+  //methd3: 只用ID文本
+  // visualization_msgs::MarkerArray text_markers;
+
+  // for(int objectI = 0; objectI < bBoxes.size(); objectI++) {
+  //     visualization_msgs::Marker text_marker;
+  //     text_marker.header.frame_id = "velo_link";
+  //     text_marker.header.stamp = ros::Time::now();
+  //     text_marker.ns = "object_ids";
+  //     text_marker.id = objectI;
+  //     text_marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
+  //     text_marker.action = visualization_msgs::Marker::ADD;
+      
+  //     // 设置文本位置（使用边界框的中心点）
+  //     text_marker.pose.position.x = (bBoxes[objectI][0].x + bBoxes[objectI][6].x) / 2;
+  //     text_marker.pose.position.y = (bBoxes[objectI][0].y + bBoxes[objectI][6].y) / 2;
+  //     text_marker.pose.position.z = (bBoxes[objectI][0].z + bBoxes[objectI][6].z) / 2;
+      
+  //     // 设置文本内容
+  //     text_marker.text = "ID:" + std::to_string(objectI);
+      
+  //     // 设置文本样式
+  //     text_marker.scale.z = 2.5;  // 文字大小
+  //     text_marker.color.r = 0.0f; // 红色
+  //     text_marker.color.g = 1.0f;
+  //     text_marker.color.b = 0.0f;
+  //     text_marker.color.a = 1.0f; // 不透明
+      
+  //     text_marker.lifetime = ros::Duration(0.1);
+  //     text_markers.markers.push_back(text_marker);
+  // }
+
+  // // 发布文本标记数组
+  // marker_array_pub_.publish(text_markers);
+
+  // method 2: 用cube
+  // visualization_msgs::MarkerArray simplified_markers;
+
+  // for(int objectI = 0; objectI < bBoxes.size(); objectI++) {
+  //     visualization_msgs::Marker box;
+  //     box.header.frame_id = "velo_link";
+  //     box.header.stamp = ros::Time::now();
+  //     box.ns = "simplified_boxes";
+  //     box.id = objectI;
+  //     box.type = visualization_msgs::Marker::CUBE;
+  //     box.action = visualization_msgs::Marker::ADD;
+      
+  //     // 计算边界框的中心和尺寸
+  //     box.pose.position.x = (bBoxes[objectI][0].x + bBoxes[objectI][6].x) / 2;
+  //     box.pose.position.y = (bBoxes[objectI][0].y + bBoxes[objectI][6].y) / 2;
+  //     box.pose.position.z = (bBoxes[objectI][0].z + bBoxes[objectI][6].z) / 2;
+      
+  //     box.scale.x = fabs(bBoxes[objectI][0].x - bBoxes[objectI][1].x);
+  //     box.scale.y = fabs(bBoxes[objectI][0].y - bBoxes[objectI][3].y);
+  //     box.scale.z = fabs(bBoxes[objectI][0].z - bBoxes[objectI][4].z);
+      
+  //     // 设置颜色和透明度
+  //     box.color.r = 0.0f;
+  //     box.color.g = 1.0f;
+  //     box.color.b = 0.0f;
+  //     box.color.a = 0.5f;
+      
+  //     box.lifetime = ros::Duration(0.1);
+  //     simplified_markers.markers.push_back(box);
+  // }
+
+  // marker_array_pub_.publish(simplified_markers);
+
+  // method 1: 用边界框
   visualization_msgs::Marker line_list; //将候选框8个点连线
   // line_list.lifetime = ros::Duration(0.1);
   line_list.header.frame_id = "velo_link";   // 定义frame_id (rviz需要设置世界坐标系为velodyne)
@@ -174,7 +242,7 @@ void  cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input){  // f非地面�
   line_list.ns =  "boxes";
   line_list.action = visualization_msgs::Marker::ADD;
   line_list.pose.orientation.w = 1.0;
-  line_list.id = 0;  // 不注释试试
+  line_list.id = 0;
   line_list.type = visualization_msgs::Marker::LINE_LIST; //线条序列
 
   //LINE_LIST markers use only the x component of scale, for the line width  仅将比例的x分量用于线宽

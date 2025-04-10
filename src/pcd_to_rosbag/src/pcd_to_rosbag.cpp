@@ -15,8 +15,8 @@ int main(int argc, char** argv) {
     ros::NodeHandle nh;
 
     // --- 参数配置 ---
-    std::string pcd_dir = "/home/cyq/simulation_dataset/test";  // PCD 文件目录
-    std::string output_bag = "/home/cyq/catkin_wp/path/20_test_simulation.bag";       // 输出 bag 文件名
+    std::string pcd_dir = "/home/cyq/simulation_dataset/no_treelawn_filtered";  // PCD 文件目录
+    std::string output_bag = "/home/cyq/catkin_wp/path/no_treelawn_filtered_256car.bag";       // 输出 bag 文件名
     std::string topic_name = "/simulation/velo/pointcloud";  // 话题名称（与 KITTI 一致）
     std::string frame_id = "velo_link";          // 坐标系名称
 

@@ -52,8 +52,6 @@ int counta = 0;
 
 ros::Publisher pub;
 
-ros::Publisher vis_pub;
-ros::Publisher vis_pub2;
 tf::TransformListener* tran;
 // tf::TransformListener* tran2;
 
@@ -235,78 +233,6 @@ void  cloud_cb (const object_tracking::trackbox& input){
 
   //   vis_pub.publish(arrowsG);  // 发布箭头消息
   // }
-
-  
-  // tracking points visualizing start---------------------------------------------
-  
-//   visualization_msgs::Marker pointsY, pointsG, pointsR, pointsB;
-//   pointsY.header.frame_id = pointsG.header.frame_id = pointsR.header.frame_id = pointsB.header.frame_id = "velo_link";
-  
-//   pointsY.header.stamp= pointsG.header.stamp= pointsR.header.stamp =pointsB.header.stamp = ros::Time::now();
-//   pointsY.ns= pointsG.ns = pointsR.ns =pointsB.ns=  "points";
-//   pointsY.action = pointsG.action = pointsR.action = pointsB.action = visualization_msgs::Marker::ADD;
-//   pointsY.pose.orientation.w = pointsG.pose.orientation.w  = pointsR.pose.orientation.w =pointsB.pose.orientation.w= 1.0;
-
-//   pointsY.id = 1;
-//   pointsG.id = 2;
-//   pointsR.id = 3;
-//   pointsB.id = 4;
-//   pointsY.type = pointsG.type = pointsR.type = pointsB.type = visualization_msgs::Marker::POINTS;
-
-//   // POINTS markers use x and y scale for width/height respectively
-//   pointsY.scale.x =pointsG.scale.x =pointsR.scale.x = pointsB.scale.x=0.5;
-//   pointsY.scale.y =pointsG.scale.y =pointsR.scale.y = pointsB.scale.y = 0.5;
-
-//   // yellow（红绿蓝混合为黄）
-//   pointsY.color.r = 1.0f;
-//   pointsY.color.g = 1.0f;
-//   pointsY.color.b = 0.0f;
-//   pointsY.color.a = 1.0;
-
-//   // green
-//   pointsG.color.g = 1.0f;
-//   pointsG.color.a = 1.0;
-
-//   // red
-//   pointsR.color.r = 1.0;
-//   pointsR.color.a = 1.0;
-
-//   // blue 
-//   pointsB.color.b = 1.0;
-//   pointsB.color.a = 1.0;
-
-// //  cout << "targetPoints.size() is --=------" << targetPoints.size() <<endl;
-
-//   for(int i = 0; i < targetPoints.size(); i++){
-//     if(trackManage[i] == 0) continue;
-//     geometry_msgs::Point p;
-//     // p.x = targetPoints[i].x;
-//     // p.y = targetPoints[i].y;
-//     p.x = egoTFPoints[i].x;
-//     p.y = egoTFPoints[i].y;
-//     p.z = -1.73/2;
-
-// //   cout << "is ------------------" << i <<endl;
-//     // cout << "trackManage[i]  " <<trackManage[i] << endl; // 输出
-//     if(isStaticVec[i] == true){   // isStaticVec???
-//       pointsB.points.push_back(p);    // 蓝点
-//     }
-//     else if(trackManage[i] < 5 ){  // 小于5为黄点
-//       pointsY.points.push_back(p);
-//     }
-//     else if(trackManage[i] == 5){  // 等于5为绿点
-//       pointsG.points.push_back(p);
-//     }
-//     else if(trackManage[i] > 5){
-//       pointsR.points.push_back(p);    // 大于5为红点
-//     }
-//   }
-//   vis_pub.publish(pointsY);   // 发布
-//   // cout << "pointsG" << pointsG.points[0].x << " "<< pointsG.points[0].y << endl;
-//   vis_pub.publish(pointsG);  // 发布
-//   vis_pub.publish(pointsR);  // 发布
-//   vis_pub.publish(pointsB);  // 发布
-//   // tracking poiints visualizing end---------------------------------------------
 }
 
 

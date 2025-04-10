@@ -369,21 +369,6 @@ void getBoundingBox(vector<PointCloud<PointXYZ>>  clusteredPoints,
             Point2f rectPoints[4]; rectInfo.points( rectPoints );
             // covert points back to lidar coordinate  隐蔽点返回激光雷达坐标
             getPointsInPcFrame(rectPoints, pcPoints, offsetInitX, offsetInitY);
-            // rule based filter
-            // std::cout << "numPoints: " << numPoints << std::endl;
-            // bool isPromising = ruleBasedFilter(pcPoints, maxZ, numPoints);
-            // if(!isPromising) continue;   // 没有,就舍弃此聚类,到下一个循环
-
-        //     // for visualization
-        //    for( int j = 0; j < 4; j++ )
-        //        line( m, rectPoints[j], rectPoints[(j+1)%4ne], Scalar(255,255,0), 1, 8 );
-        //    imshow("Display Image", m);
-        //    waitKey(0);
-            /////////std::cout << " else  pcPoints[0]  " << pcPoints[0].x << " " <<  pcPoints[0].y << std::endl;
-            ////////std::cout << " else  pcPoints[1]  " << pcPoints[1].x << " " <<  pcPoints[1].y << std::endl;
-            ///////std::cout << " else  pcPoints[2]  " << pcPoints[2].x << " " <<  pcPoints[2].y << std::endl;
-            ///////std::cout << " else  pcPoints[3]  " << pcPoints[3].x << " " <<  pcPoints[3].y << std::endl;
-
         }
 
         // make pcl cloud for 3d bounding box  3D边界框
@@ -399,20 +384,6 @@ void getBoundingBox(vector<PointCloud<PointXYZ>>  clusteredPoints,
             }
         }  //  3D边界框填充循环结束
 
-        ////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////
-
-        // float xDist1 = oneBbox[0].x-oneBbox[1].x;
-        // float yDist1 = oneBbox[0].y-oneBbox[1].y;
-        // float slopeDist1 = sqrt(xDist1*xDist1 + yDist1*yDist1);
-        // float xDist2 = oneBbox[1].x-oneBbox[2].x;
-        // float yDist2 = oneBbox[1].y-oneBbox[2].y;
-        // float slopeDist2 = sqrt(xDist2*xDist2 + yDist2*yDist2);
-        // if(slopeDist1 < 0.2||slopeDist2 < 0.2) continue;
-
-
-        ////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////
 
 
         bbPoints.push_back(oneBbox); // 实体边界框集合
