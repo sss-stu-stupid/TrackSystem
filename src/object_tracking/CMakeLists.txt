@@ -3,18 +3,23 @@ project(object_tracking)
 
 # set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD 14)
-
+set(Qt5_DIR "/usr/lib/x86_64-linux-gnu/cmake/Qt5")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
 find_package(catkin REQUIRED COMPONENTS
   pcl_conversions
   pcl_ros
   roscpp
   sensor_msgs 
   std_msgs
+  rviz
 )
+
+# include Qt headers
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
 
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
@@ -48,7 +53,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  CATKIN_DEPENDS pcl_conversions pcl_ros roscpp sensor_msgs
 #  DEPENDS system_lib
-  CATKIN_DEPENDS message_generation std_msgs message_runtime sensor_msgs
+  CATKIN_DEPENDS message_generation std_msgs message_runtime sensor_msgs rviz
 )
 
 ###########
@@ -64,17 +69,31 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_LIBRARIES}
   ${PCL_INCLUDE_DIRS}
+  ${OGRE_INCLUDE_DIRS}  # RViz 使用 OGRE 进行渲染
 )
 
-#add_executable(extract_ground src/extract_ground.cpp src/extract_ground.h)
-#target_link_libraries(extract_ground 
-#   ${catkin_LIBRARIES}
-#   ${OpenCV_LIBRARIES}
-#   ${PCL_LIBRARIES}
-#)
+
+# Qt 插件部分
+set(PANEL_SOURCES src/panel/num_cluster_panel.cpp)
+add_library(num_cluster_panel ${PANEL_SOURCES})
+target_link_libraries(num_cluster_panel
+  ${catkin_LIBRARIES}
+  Qt5::Widgets      # 加上 Qt5::Widgets 的链接
+)
+# 安装插件库
+install(TARGETS num_cluster_panel
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
+
+install(FILES plugin_description.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
 
-#set(SOURCE_FILES src/main.cpp src/gaus_blur.cpp src/gaus_blur.h src/ground_removal.cpp src/ground_removal.h src/component_clustering.cpp src/component_clustering.h src/box_fitting.cpp src/box_fitting.cpp src/ukf.cpp)
+# 让 CMake 知道使用 MOC（元对象编译器）
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 set(SOURCE_FILES1 src/groundremove/main.cpp src/groundremove/gaus_blur.cpp src/groundremove/ground_removal.cpp )
 add_executable(ground ${SOURCE_FILES1})

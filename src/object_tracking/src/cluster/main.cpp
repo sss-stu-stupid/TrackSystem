@@ -31,6 +31,8 @@
 // #include <tf2_sensor_msgs/tf2_sensor_msgs.h>
 #include <utility>
 #include <nav_msgs/OccupancyGrid.h>
+// 
+#include <std_msgs/Int32.h>
 
 
 #include <object_tracking/trackbox.h>  // 没有这个文件？
@@ -50,11 +52,11 @@ ros::Publisher vis_pub;
 
 ros::Publisher g_costmap_pub;
 
-ros::Publisher obs_pub;
-
 ros::Publisher marker_array_pub_;
 
 ros::Publisher box_pub;
+
+ros::Publisher num_cluster_pub;
 
 // 回调函数
 void  cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input){  // f非地面数据
@@ -82,7 +84,13 @@ void  cloud_cb (const sensor_msgs::PointCloud2ConstPtr& input){  // f非地面�
 
   // 2. 聚类处理
   componentClustering(raw_cloud, cartesianData, numCluster);  // Source: /src/cluster/component_clustering.cpp
-  cout << "初始聚类ID数量numCluster is "<<numCluster<<endl; // 聚类的数量
+  // cout << "初始聚类ID数量numCluster is "<<numCluster<<endl; // 聚类的数量
+
+
+  // 发布 numCluster
+  std_msgs::Int32 num_msg;
+  num_msg.data = numCluster;
+  num_cluster_pub.publish(num_msg);
 
   PointCloud<pcl::PointXYZ>::Ptr clusteredCloud (new pcl::PointCloud<pcl::PointXYZ>);
   
@@ -300,6 +308,8 @@ int main (int argc, char** argv){
   ros::NodeHandle nh;
 
   ros::Subscriber sub = nh.subscribe ("/raw_pointcloud", 160, cloud_cb);  //订阅者  none_ground_topic -- 话题topic名
+
+  num_cluster_pub = nh.advertise<std_msgs::Int32>("/num_cluster", 10);    // num_cluster
 
   // Create a ROS publisher for the output point cloud
   vis_pub = nh.advertise<visualization_msgs::Marker>( "/visualization_marker", 500);  //发布者  visualization_marker -- 话题topic名

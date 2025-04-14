@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<library path="/home/cyq/catkin_wp/devel/lib/libnum_cluster_panel.so">
+  <class name="NumClusterPanel" type="object_tracking::NumClusterPanel" base_class_type="rviz::Panel">
+    <description>
+      A custom RViz panel to display the number of clusters.
+    </description>
+  </class>
+</library>
